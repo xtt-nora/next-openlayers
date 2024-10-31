@@ -36,10 +36,5 @@ const AuthWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return <RedirectToSignIn />;
   }
 
-  return (
-    <div>
-      <UserButton />
-      {children}
-    </div>
-  ); // 登录后渲染子组件
+  return <div className=" w-full h-full">{children}</div>; // 登录后渲染子组件
 };
