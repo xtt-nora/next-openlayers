@@ -1,6 +1,7 @@
 "use client";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useState } from "react";
+import { CollectList } from "./_components/collect-list";
 
 export default function Home() {
   const list = [
@@ -23,7 +24,7 @@ export default function Home() {
   };
   return (
     <>
-      <div className="flex flex-row flex-nowrap justify-start">
+      <div className="flex flex-row flex-nowrap justify-start mb-2">
         <ToggleGroup size={"sm"} type="single" value={value} onValueChange={handleChange}>
           {list.map((item, index) => (
             <div key={index} className=" mt-1 mx-2">
@@ -32,7 +33,11 @@ export default function Home() {
           ))}
         </ToggleGroup>
       </div>
-      {value === "收藏" && <>收藏</>}
+      {value === "收藏" && (
+        <>
+          <CollectList />
+        </>
+      )}
       {value === "我的地图" && <>我的地图</>}
       {value === "足迹" && <>足迹</>}
     </>
