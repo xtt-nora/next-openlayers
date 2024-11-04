@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { use } from "react";
 
 interface MapParams {
@@ -12,7 +13,12 @@ interface MapProps {
 
 const MapPage = ({ params }: MapProps) => {
   const unwrappedParams = use(params);
-
-  return <div>{unwrappedParams.mapid}</div>;
+  const mapRef = React.createRef<HTMLDivElement>();
+  return (
+    <div>
+      {/* <div>{unwrappedParams.mapid}</div> */}
+      <div ref={mapRef} className="w-full h-full bg-slate-400"></div>
+    </div>
+  );
 };
 export default MapPage;
