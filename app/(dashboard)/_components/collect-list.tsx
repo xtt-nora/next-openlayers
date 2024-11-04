@@ -1,5 +1,6 @@
 "use client";
 
+import { AvatarFallback, AvatarImage, Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -53,24 +54,17 @@ const data = [
 
 export const CollectList = () => {
   return (
-    <div className="w-full flex flex-wrap">
+    <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4 pt-4 pb-1">
       {data.map((collect, index) => (
-        <div className="w-[350px] ml-3 mt-3" key={index}>
-          <Card>
-            <CardHeader>
-              <CardTitle>{collect.title}</CardTitle>
-              <CardDescription>{collect.description}</CardDescription>
-            </CardHeader>
-            {/* <CardContent>
-          <form>
-            <div className="grid w-full items-center gap-4"></div>
-          </form>
-        </CardContent> */}
-            <CardFooter className="flesx justify-between">
-              <Button variant="outline">Cancel</Button>
-              <Button>Deploy</Button>
-            </CardFooter>
-          </Card>
+        <div
+          className="flex text-inherit no-underline select-none transition w-full bg-white duration-100 ease-out cursor-pointer shadow-[rgba(15,15,15,0.07)_0px_0px_0px_1px,rgba(15,15,15,0.05)_0px_2px_4px] rounded-[10px] overflow-hidden static h-full flex-col"
+          key={index}
+        >
+          <div className=" w-full h-[150px]">
+            <img src="https://github.com/shadcn.png" className="w-full h-full" />
+          </div>
+          <div>{collect.title}</div>
+          <div></div>
         </div>
       ))}
     </div>
