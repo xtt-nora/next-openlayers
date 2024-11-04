@@ -4,9 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { mapData } from "./data";
 import { LockKeyhole, LockKeyholeOpen, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export const MapList = () => {
   const [data, setData] = useState(mapData);
+  const router = useRouter();
   const deleteItem = (collect: any) => {
     setData((prevData) => prevData.filter((item) => item.id !== collect.id));
   };
@@ -15,6 +17,7 @@ export const MapList = () => {
       prevData.map((item) => (item.id === collect.id ? { ...item, isLocked: !item.isLocked } : item))
     );
   };
+
   return (
     <div className=" overflow-auto h-[calc(100%-120px)] ">
       <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-4 pt-4 pb-1">
@@ -22,6 +25,7 @@ export const MapList = () => {
           <div
             className="group flex relative text-inherit no-underline select-none transition w-full bg-white duration-100 ease-out cursor-pointer shadow-[rgba(15,15,15,0.07)_0px_0px_0px_1px,rgba(15,15,15,0.05)_0px_2px_4px] rounded-[10px] overflow-hidden static h-full flex-col"
             key={index}
+            onClick={() => router.push(`/map/${collect.id}/map-item`)}
           >
             <div className=" w-full h-[150px]">
               <img src={collect.bgImg} className="w-full h-full" />
@@ -39,11 +43,21 @@ export const MapList = () => {
               </div>
             </div>
             <div className=" absolute right-2 top-1 bg-white w-11 h-6  flex  items-center justify-evenly border-[rgba(55,53,47,0.09)] rounded-[3px] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-              <div onClick={() => updateLocked(collect)}>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  updateLocked(collect);
+                }}
+              >
                 {collect.isLocked ? <LockKeyhole color="#ce2c2c" size={16} /> : <LockKeyholeOpen size={16} />}
               </div>
               <div className=" border-r h-6  border-r-[rgba(55,53,47,0.09)]"></div>
-              <div onClick={() => deleteItem(collect)}>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteItem(collect);
+                }}
+              >
                 <Trash2 size={16} />
               </div>
             </div>
