@@ -2,7 +2,7 @@
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useState } from "react";
 import { CollectList } from "./_components/collect-list";
-
+import { MapList } from "./_components/map-list";
 export default function Home() {
   const list = [
     {
@@ -38,7 +38,11 @@ export default function Home() {
           <CollectList />
         </>
       )}
-      {value === "我的地图" && <>我的地图</>}
+      {value === "我的地图" && (
+        <>
+          <MapList />
+        </>
+      )}
       {value === "足迹" && <>足迹</>}
     </>
   );
