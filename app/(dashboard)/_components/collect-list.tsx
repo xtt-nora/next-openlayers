@@ -1,70 +1,33 @@
 "use client";
 
-import { AvatarFallback, AvatarImage, Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-
-const data = [
-  {
-    id: "0",
-    title: "收藏",
-    description: "一个收藏列表",
-  },
-  {
-    id: "1",
-    title: "想去",
-    description: "想去的地点",
-  },
-  {
-    id: "2",
-    title: "双人",
-    description: "双人成行",
-  },
-  {
-    id: "3",
-    title: "想去",
-    description: "想去的地点",
-  },
-  {
-    id: "4",
-    title: "双人",
-    description: "双人成行",
-  },
-  {
-    id: "5",
-    title: "想去",
-    description: "想去的地点",
-  },
-  {
-    id: "6",
-    title: "双人",
-    description: "双人成行",
-  },
-  {
-    id: "7",
-    title: "想去",
-    description: "想去的地点",
-  },
-  {
-    id: "8",
-    title: "双人",
-    description: "双人成行",
-  },
-];
-
+import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
+import { useState } from "react";
+import { initdata } from "./data";
 export const CollectList = () => {
+  const [data, setData] = useState(initdata);
+  const updateLocked = (collect: any) => {
+    setData((prevData) =>
+      prevData.map((item) => (item.id === collect.id ? { ...item, isLocked: !item.isLocked } : item))
+    );
+  };
   return (
-    <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-4 pt-4 pb-1">
+    <div className="w-full flex h-[calc(100%-120px)] overflow-auto flex-wrap">
       {data.map((collect, index) => (
-        <div
-          className="flex text-inherit no-underline select-none transition w-full bg-white duration-100 ease-out cursor-pointer shadow-[rgba(15,15,15,0.07)_0px_0px_0px_1px,rgba(15,15,15,0.05)_0px_2px_4px] rounded-[10px] overflow-hidden static h-full flex-col"
-          key={index}
-        >
-          <div className=" w-full h-[150px]">
-            <img src="https://github.com/shadcn.png" className="w-full h-full" />
-          </div>
-          <div>{collect.title}</div>
-          <div></div>
+        <div className="w-[350px] ml-2 mt-3" key={index}>
+          <Card>
+            <CardHeader>
+              <CardTitle>{collect.title}</CardTitle>
+              <CardDescription>{collect.description}</CardDescription>
+            </CardHeader>
+            <CardFooter className="flesx justify-between">
+              <Button variant="outline">删除</Button>
+              <div onClick={() => updateLocked(collect)}>
+                {collect.isLocked ? <LockKeyhole /> : <LockKeyholeOpen />}
+              </div>
+            </CardFooter>
+          </Card>
         </div>
       ))}
     </div>
