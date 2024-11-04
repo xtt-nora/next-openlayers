@@ -3,7 +3,7 @@ interface MapLayoutProps {
 }
 
 const MapItemLayout = ({ children }: MapLayoutProps) => {
-  return <main className="h-full  px-0 2xl:px-56 overflow-hidden">{children}</main>;
+  return <div className="block space-y-6 pb-16 pt-32 p-12">{children}</div>;
 };
 
 export default MapItemLayout;
