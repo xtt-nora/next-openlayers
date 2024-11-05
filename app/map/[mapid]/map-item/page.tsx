@@ -16,8 +16,8 @@ const MapPage = ({ params }: MapProps) => {
   const mapRef = React.createRef<HTMLDivElement>();
   return (
     <div>
-      {/* <div>{unwrappedParams.mapid}</div> */}
-      <div ref={mapRef} className="w-full h-full bg-slate-400"></div>
+      <div>{unwrappedParams.mapid}</div>
+      {/* <div ref={mapRef} className="w-full h-full bg-slate-400"></div> */}
     </div>
   );
 };

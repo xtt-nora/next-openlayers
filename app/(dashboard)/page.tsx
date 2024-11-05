@@ -1,8 +1,11 @@
 "use client";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { CollectList } from "./_components/collect-list";
 import { MapList } from "./_components/map-list";
+import { CreateDialog } from "./_components/create-dialog";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 export default function Home() {
   const list = [
     {
@@ -22,9 +25,16 @@ export default function Home() {
   const handleChange = (value: string) => {
     value && setValue(value);
   };
+  const store = useMutation(api.user.store);
+  useEffect(() => {
+    const storeUser = async () => {
+      await store({});
+    };
+    storeUser();
+  }, [store]);
   return (
     <>
-      <div className="flex flex-row flex-nowrap justify-start mb-2">
+      <div className="flex flex-row flex-nowrap justify-between  items-center mb-2">
         <ToggleGroup size={"sm"} type="single" value={value} onValueChange={handleChange}>
           {list.map((item, index) => (
             <div key={index} className=" mt-1 mx-2">
@@ -32,6 +42,7 @@ export default function Home() {
             </div>
           ))}
         </ToggleGroup>
+        {value === "我的地图" && <CreateDialog />}
       </div>
       {value === "收藏" && (
         <>
