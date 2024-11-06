@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Component } from "react";
-import { Feature, Map, View } from "ol";
+import { Feature, Map, Overlay, View } from "ol";
 import { defaults as defaultControls, FullScreen } from "ol/control";
 import { fromLonLat } from "ol/proj";
 import { Point } from "ol/geom";
@@ -11,7 +11,7 @@ import TileLayer from "ol/layer/Tile";
 import OSM from "ol/source/OSM";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
-import { useSearchModal } from "@/store/use-search-modal";
+import "./map.css";
 interface MapProps {
   resize?: boolean;
   width?: number | string;
@@ -34,6 +34,13 @@ export default class ComMap extends Component<MapProps, State> {
   private mapRef: React.RefObject<HTMLDivElement>;
   private map: Map | null;
   private vectorLayer: VectorLayer;
+  private container = document.getElementById("popup");
+  private content = document.getElementById("popup-content") as HTMLElement;
+  private closer = document.getElementById("popup-closer") as HTMLElement;
+  private popupContainerRef = React.createRef<HTMLDivElement>();
+  private popupContentRef = React.createRef<HTMLDivElement>();
+  private popupCloserRef = React.createRef<HTMLAnchorElement>();
+  private popup: Overlay;
   constructor(props: MapProps) {
     super(props);
     this.state = {
@@ -42,6 +49,11 @@ export default class ComMap extends Component<MapProps, State> {
     this.mapRef = React.createRef();
     this.map = null;
     this.vectorLayer = new VectorLayer();
+    this.popup = new Overlay({
+      element: this.popupContainerRef.current as HTMLElement,
+      positioning: "bottom-center",
+      stopEvent: false,
+    });
   }
   //初始化
   init = () => {
@@ -67,6 +79,10 @@ export default class ComMap extends Component<MapProps, State> {
         attribution: false,
       }).extend([new FullScreen()]),
     });
+
+    this.map.addOverlay(this.popup);
+    this.bindPopupCloser();
+    this.mapPopup();
   };
   componentDidMount() {
     this.init();
@@ -79,6 +95,33 @@ export default class ComMap extends Component<MapProps, State> {
   getMapStyle() {
     const { width, height } = this.props;
     return width || height ? { height: `${height}px`, width: `${width}px` } : { height: "100%", width: "100%" };
+  }
+
+  bindPopupCloser = () => {
+    const closer = this.popupCloserRef.current;
+    if (this.closer) {
+      this.closer.onclick = () => {
+        this.popup.setPosition(undefined);
+        this.closer.blur();
+        return false;
+      };
+    }
+  };
+  mapPopup() {
+    this.map?.on("click", (evt) => {
+      const feature = this.map?.forEachFeatureAtPixel(evt.pixel, function (feature: any) {
+        return feature;
+      });
+      if (!feature) {
+        return;
+      }
+      const coordinate = evt.coordinate;
+      const content = this.popupContentRef.current;
+      if (content) {
+        content.innerHTML = "<p>You clicked here:</p><code>" + coordinate + "</code>";
+      }
+      this.popup.setPosition(coordinate);
+    });
   }
   searchLocation = async (search: string) => {
     this.map?.removeLayer(this.vectorLayer);
@@ -113,6 +156,14 @@ export default class ComMap extends Component<MapProps, State> {
   };
   render() {
     const mapStyle = this.getMapStyle();
-    return <div ref={this.mapRef} style={mapStyle} className="w-full h-full"></div>;
+    return (
+      <>
+        <div ref={this.mapRef} style={mapStyle} className="w-full h-full"></div>
+        <div id="popup" className="ol-popup">
+          <a href="#" id="popup-closer" className="ol-popup-closer"></a>
+          <div id="popup-content"></div>
+        </div>
+      </>
+    );
   }
 }
