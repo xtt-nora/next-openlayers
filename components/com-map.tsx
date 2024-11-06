@@ -33,7 +33,6 @@ export default class ComMap extends Component<MapProps, State> {
   };
   private mapRef: React.RefObject<HTMLDivElement>;
   private map: Map | null;
-  private marker: Feature;
   private vectorLayer: VectorLayer;
   constructor(props: MapProps) {
     super(props);
@@ -42,7 +41,6 @@ export default class ComMap extends Component<MapProps, State> {
     };
     this.mapRef = React.createRef();
     this.map = null;
-    this.marker = new Feature();
     this.vectorLayer = new VectorLayer();
   }
   //初始化
@@ -53,19 +51,8 @@ export default class ComMap extends Component<MapProps, State> {
     const osmLayer = new TileLayer({
       source: new OSM(),
     });
-    this.marker.setStyle(
-      new Style({
-        image: new Icon({
-          anchor: [0.5, 1],
-          src: "https://openlayers.org/en/latest/examples/data/icon.png", // 标记图标的 URL
-        }),
-      })
-    );
-    this.vectorLayer = new VectorLayer({
-      source: new VectorSource({
-        features: [this.marker],
-      }),
-    });
+
+    this.vectorLayer = new VectorLayer();
     this.map = new Map({
       target: this.mapRef.current as HTMLElement,
       layers: [osmLayer, this.vectorLayer],
@@ -104,9 +91,21 @@ export default class ComMap extends Component<MapProps, State> {
       const { lat, lon } = data[0];
       const location = [parseFloat(lon), parseFloat(lat)];
       this.map?.getView().setCenter(location);
-      this.marker = new Feature({
+      const newMarker = new Feature({
         geometry: new Point(location),
       });
+      newMarker.setStyle(
+        new Style({
+          image: new Icon({
+            anchor: [0.5, 1],
+            src: "https://openlayers.org/en/latest/examples/data/icon.png", // 使用标记图标
+          }),
+        })
+      );
+
+      // 更新 vectorLayer 的 source，确保新的标记能够显示
+      this.vectorLayer.setSource(new VectorSource({ features: [newMarker] }));
+
       this.map?.addLayer(this.vectorLayer);
     } else {
       alert("地点未找到！");

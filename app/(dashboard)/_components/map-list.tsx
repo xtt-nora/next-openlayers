@@ -2,7 +2,6 @@
 
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
-import { mapData } from "./data";
 import { LockKeyhole, LockKeyholeOpen, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
