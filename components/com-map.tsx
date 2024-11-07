@@ -34,9 +34,6 @@ export default class ComMap extends Component<MapProps, State> {
   private mapRef: React.RefObject<HTMLDivElement>;
   private map: Map | null;
   private vectorLayer: VectorLayer;
-  private container = document.getElementById("popup");
-  private content = document.getElementById("popup-content") as HTMLElement;
-  private closer = document.getElementById("popup-closer") as HTMLElement;
   private popupContainerRef = React.createRef<HTMLDivElement>();
   private popupContentRef = React.createRef<HTMLDivElement>();
   private popupCloserRef = React.createRef<HTMLAnchorElement>();
@@ -50,9 +47,11 @@ export default class ComMap extends Component<MapProps, State> {
     this.map = null;
     this.vectorLayer = new VectorLayer();
     this.popup = new Overlay({
-      element: this.popupContainerRef.current as HTMLElement,
-      positioning: "bottom-center",
-      stopEvent: false,
+      autoPan: {
+        animation: {
+          duration: 250,
+        },
+      },
     });
   }
   //初始化
@@ -73,19 +72,21 @@ export default class ComMap extends Component<MapProps, State> {
         projection: "EPSG:4326",
         zoom: this.props.zoom,
       }),
+      overlays: [this.popup],
       controls: defaultControls({
         zoom: false,
         rotate: false,
         attribution: false,
       }).extend([new FullScreen()]),
     });
-
-    this.map.addOverlay(this.popup);
     this.bindPopupCloser();
     this.mapPopup();
   };
   componentDidMount() {
     this.init();
+    if (this.popupContainerRef.current) {
+      this.popup.setElement(this.popupContainerRef.current);
+    }
   }
   componentDidUpdate(prevProps: Readonly<MapProps>): void {
     if (this.props.search && this.props.search !== prevProps.search) {
@@ -99,23 +100,18 @@ export default class ComMap extends Component<MapProps, State> {
 
   bindPopupCloser = () => {
     const closer = this.popupCloserRef.current;
-    if (this.closer) {
-      this.closer.onclick = () => {
+    if (closer) {
+      closer.onclick = () => {
         this.popup.setPosition(undefined);
-        this.closer.blur();
+        closer.blur();
         return false;
       };
     }
   };
   mapPopup() {
     this.map?.on("click", (evt) => {
-      const feature = this.map?.forEachFeatureAtPixel(evt.pixel, function (feature: any) {
-        return feature;
-      });
-      if (!feature) {
-        return;
-      }
       const coordinate = evt.coordinate;
+      console.log(coordinate, evt);
       const content = this.popupContentRef.current;
       if (content) {
         content.innerHTML = "<p>You clicked here:</p><code>" + coordinate + "</code>";
@@ -129,7 +125,7 @@ export default class ComMap extends Component<MapProps, State> {
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(search)}`
     );
     const data = await response.json();
-
+    console.log(data, "data");
     if (data && data.length > 0) {
       const { lat, lon } = data[0];
       const location = [parseFloat(lon), parseFloat(lat)];
@@ -141,7 +137,7 @@ export default class ComMap extends Component<MapProps, State> {
         new Style({
           image: new Icon({
             anchor: [0.5, 1],
-            src: "https://openlayers.org/en/latest/examples/data/icon.png", // 使用标记图标
+            src: "/pin.png",
           }),
         })
       );
@@ -150,6 +146,16 @@ export default class ComMap extends Component<MapProps, State> {
       this.vectorLayer.setSource(new VectorSource({ features: [newMarker] }));
 
       this.map?.addLayer(this.vectorLayer);
+
+      const content = this.popupContentRef.current;
+      if (content) {
+        content.innerHTML = `
+        <p>名称：${data[0].name}</p>
+        <button id="shareButton">分享</button>
+        <button id="addButton">添加</button>
+      `;
+      }
+      this.popup.setPosition(location);
     } else {
       alert("地点未找到！");
     }
@@ -159,9 +165,9 @@ export default class ComMap extends Component<MapProps, State> {
     return (
       <>
         <div ref={this.mapRef} style={mapStyle} className="w-full h-full"></div>
-        <div id="popup" className="ol-popup">
-          <a href="#" id="popup-closer" className="ol-popup-closer"></a>
-          <div id="popup-content"></div>
+        <div ref={this.popupContainerRef} id="popup" className="ol-popup">
+          <a ref={this.popupCloserRef} href="#" id="popup-closer" className="ol-popup-closer"></a>
+          <div ref={this.popupContentRef} id="popup-content"></div>
         </div>
       </>
     );

@@ -18,7 +18,6 @@ interface MapProps {
 
 const MapPage = ({ params }: MapProps) => {
   const unwrappedParams = use(params);
-  const [content, setContent] = useState(4);
   const { search } = useSearchModal();
   return (
     <div className="w-full h-full flex flex-row">
@@ -29,7 +28,7 @@ const MapPage = ({ params }: MapProps) => {
         <div className="absolute top-[10px] left-[10px]  z-[99999] w-30%">
           <SearchInput />
         </div>
-        <ComMap zoom={content} search={search} />
+        <ComMap zoom={4} search={search} />
       </div>
     </div>
   );
