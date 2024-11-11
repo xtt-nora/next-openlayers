@@ -31,13 +31,13 @@ export default class ComMap extends Component<MapProps, State> {
     center: [0, 0], // 默认经纬度
     zoom: 4, // 默认 zoom 级别
   };
-  private mapRef: React.RefObject<HTMLDivElement>;
-  private map: Map | null;
-  private vectorLayer: VectorLayer;
-  private popupContainerRef = React.createRef<HTMLDivElement>();
-  private popupContentRef = React.createRef<HTMLDivElement>();
-  private popupCloserRef = React.createRef<HTMLAnchorElement>();
-  private popup: Overlay;
+  mapRef: React.RefObject<HTMLDivElement>;
+  map: Map | null;
+  vectorLayer: VectorLayer;
+  popupContainerRef = React.createRef<HTMLDivElement>();
+  popupContentRef = React.createRef<HTMLDivElement>();
+  popupCloserRef = React.createRef<HTMLAnchorElement>();
+  popup: Overlay;
   constructor(props: MapProps) {
     super(props);
     this.state = {

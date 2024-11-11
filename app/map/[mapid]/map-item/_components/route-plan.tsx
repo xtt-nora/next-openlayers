@@ -1,4 +1,35 @@
-import { GitBranchPlus, Save, Edit3, MoreVertical } from "lucide-react";
+import { GradientPicker } from "@/components/GradientPicker";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  GitBranchPlus,
+  Save,
+  Edit3,
+  MoreVertical,
+  User,
+  CreditCard,
+  Settings,
+  Keyboard,
+  Users,
+  Plus,
+  Github,
+  LifeBuoy,
+  Cloud,
+  LogOut,
+  Waypoints,
+  Trash2,
+  SquareArrowOutUpRight,
+  ArrowDownToLine,
+} from "lucide-react";
 import { useState } from "react";
 
 export const RoutePlan = () => {
@@ -87,7 +118,7 @@ export const RoutePlan = () => {
       prevList.map((i) => (i.id === item.id ? { ...i, routeName: newName, isEdit: false } : i))
     );
   };
-
+  const [background, setBackground] = useState("#B4D455");
   return (
     <div className="flex flex-col w-full h-full">
       <div className="h-5 w-full flex my-2.5 justify-between">
@@ -120,7 +151,40 @@ export const RoutePlan = () => {
                   <span className="text-xs truncate">{item.routeName}</span>
                 </div>
               )}
-              <MoreVertical size={18} />
+              <div className="flex">
+                <GradientPicker background={background} setBackground={setBackground} />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <MoreVertical size={18} />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    <DropdownMenuLabel>路线规划</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem>
+                        <Waypoints />
+                        <span>形成路线</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Trash2 color="#f50000" />
+                        <span>删除路线</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem>
+                        <SquareArrowOutUpRight />
+                        <span>分享</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <ArrowDownToLine />
+                        <span>保存</span>
+                        <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
             <div className="pl-5">
               {item.routerGroup.map((group, i) => (
