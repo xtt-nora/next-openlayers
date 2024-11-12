@@ -21,18 +21,15 @@ export const useAddEvent = () => {
         toast.error("Failed to create gig");
       });
   };
-  const createLineEvent = (
-    item: {
-      routeName?: string;
-      _id: any;
-      isEdit?: boolean;
-      isSelected?: boolean;
-      routerColor?: string;
-      routerGroup?: { name: string; point: {}; order: number }[];
-    },
-    map: any
-  ) => {
-    console.log(item, map, "createLine");
+  const createLineEvent = (item: {
+    routeName?: string;
+    _id: any;
+    isEdit?: boolean;
+    isSelected?: boolean;
+    routerColor?: string;
+    routerGroup?: { name: string; point: {}; order: number }[];
+  }) => {
+    console.log(item, "createLine");
   };
   return { addEvent, pending, createLineEvent };
 };

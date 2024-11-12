@@ -12,7 +12,6 @@ import OSM from "ol/source/OSM";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import "./map.css";
-import { MapProvider } from "./MapContext";
 interface MapProps {
   resize?: boolean;
   width?: number | string;
@@ -195,13 +194,13 @@ export default class ComMap extends Component<MapProps, State> {
   render() {
     const mapStyle = this.getMapStyle();
     return (
-      <MapProvider map={this.map!}>
+      <>
         <div ref={this.mapRef} style={mapStyle} className="w-full h-full"></div>
         <div ref={this.popupContainerRef} id="popup" className="ol-popup">
           <a ref={this.popupCloserRef} href="#" id="popup-closer" className="ol-popup-closer"></a>
           <div ref={this.popupContentRef} id="popup-content"></div>
         </div>
-      </MapProvider>
+      </>
     );
   }
 }
