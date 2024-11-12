@@ -3,7 +3,6 @@ import { useApiMutation } from "@/hooks/use-api-mutation";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { Id } from "@/convex/_generated/dataModel";
-
 export const useAddEvent = () => {
   const { routeplanId } = useRouteplanModal();
   const { mutate, pending } = useApiMutation(api.routeplan.addSubRoute);
@@ -22,6 +21,18 @@ export const useAddEvent = () => {
         toast.error("Failed to create gig");
       });
   };
-
-  return { addEvent, pending };
+  const createLineEvent = (
+    item: {
+      routeName?: string;
+      _id: any;
+      isEdit?: boolean;
+      isSelected?: boolean;
+      routerColor?: string;
+      routerGroup?: { name: string; point: {}; order: number }[];
+    },
+    map: any
+  ) => {
+    console.log(item, map, "createLine");
+  };
+  return { addEvent, pending, createLineEvent };
 };

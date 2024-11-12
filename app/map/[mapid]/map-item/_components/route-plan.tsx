@@ -27,6 +27,9 @@ import { useEffect, useState } from "react";
 import { Id } from "@/convex/_generated/dataModel";
 import { useRouteplanModal } from "@/store/use-route-modal";
 import { useQuery } from "convex/react";
+import { useAddEvent } from "@/hooks/useAddEvent";
+import { useMap } from "@/components/MapContext";
+import { Map } from "ol";
 interface RoutePlanProps {
   mapid: any;
 }
@@ -51,11 +54,20 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
       title: "保存数据",
     },
   ];
+  const { createLineEvent } = useAddEvent();
+  const map = useMap();
   const [routeList, setRouteList] = useState<RouteListItem[]>([]);
   const routeListData = useQuery(api.routeplan.get, { mapId: mapid as Id<"map"> });
   useEffect(() => {
     if (routeListData) setRouteList(routeListData);
   }, [routeListData]);
+  useEffect(() => {
+    if (map) {
+      // 在组件加载时访问 map 实例
+      console.log("Map instance: ", map);
+    }
+  }, [map]);
+
   // const [routeList, setRouteList] = useState([
   //   {
   //     routeName: "未知路线",
@@ -112,7 +124,6 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
     routerColor?: string;
     routerGroup?: { name: string; point: {}; order: number }[];
   }) => {
-    console.log(item, "选中");
     updateRouteplanId(item._id);
     setRouteList((prevList) =>
       prevList.map((i) => ({
@@ -147,6 +158,19 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
     setRouteList((prevList) =>
       prevList.map((i) => (i._id === item._id ? { ...i, routeName: newName, isEdit: false } : i))
     );
+  };
+  const createLine = (
+    item: {
+      routeName?: string;
+      _id: any;
+      isEdit?: boolean;
+      isSelected?: boolean;
+      routerColor?: string;
+      routerGroup?: { name: string; point: {}; order: number }[];
+    },
+    map: Map | null
+  ) => {
+    createLineEvent(item, map);
   };
   const [background, setBackground] = useState("#B4D455");
   return (
@@ -191,7 +215,7 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
                     <DropdownMenuLabel>路线规划</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => createLine(item, map)}>
                         <Waypoints />
                         <span>形成路线</span>
                       </DropdownMenuItem>
