@@ -28,6 +28,8 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useRouteplanModal } from "@/store/use-route-modal";
 import { useQuery } from "convex/react";
 import { useAddEvent } from "@/hooks/useAddEvent";
+import { useMapModal } from "@/store/use-map-modal";
+import { Map } from "ol";
 interface RoutePlanProps {
   mapid: any;
 }
@@ -52,6 +54,7 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
       title: "保存数据",
     },
   ];
+  const { map } = useMapModal();
   const { createLineEvent } = useAddEvent();
   const [routeList, setRouteList] = useState<RouteListItem[]>([]);
   const routeListData = useQuery(api.routeplan.get, { mapId: mapid as Id<"map"> });
@@ -150,15 +153,18 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
       prevList.map((i) => (i._id === item._id ? { ...i, routeName: newName, isEdit: false } : i))
     );
   };
-  const createLine = (item: {
-    routeName?: string;
-    _id: any;
-    isEdit?: boolean;
-    isSelected?: boolean;
-    routerColor?: string;
-    routerGroup?: { name: string; point: {}; order: number }[];
-  }) => {
-    createLineEvent(item);
+  const createLine = (
+    item: {
+      routeName?: string;
+      _id: any;
+      isEdit?: boolean;
+      isSelected?: boolean;
+      routerColor?: string;
+      routerGroup?: { name: string; point: {}; order: number }[];
+    },
+    map: Map | null
+  ) => {
+    createLineEvent(item, map);
   };
   const [background, setBackground] = useState("#B4D455");
   return (
@@ -203,7 +209,7 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
                     <DropdownMenuLabel>路线规划</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                      <DropdownMenuItem onClick={() => createLine(item)}>
+                      <DropdownMenuItem onClick={() => createLine(item, map)}>
                         <Waypoints />
                         <span>形成路线</span>
                       </DropdownMenuItem>

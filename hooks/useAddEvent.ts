@@ -2,6 +2,7 @@ import { useRouteplanModal } from "@/store/use-route-modal";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
+import { Map } from "ol";
 import { Id } from "@/convex/_generated/dataModel";
 export const useAddEvent = () => {
   const { routeplanId } = useRouteplanModal();
@@ -21,15 +22,18 @@ export const useAddEvent = () => {
         toast.error("Failed to create gig");
       });
   };
-  const createLineEvent = (item: {
-    routeName?: string;
-    _id: any;
-    isEdit?: boolean;
-    isSelected?: boolean;
-    routerColor?: string;
-    routerGroup?: { name: string; point: {}; order: number }[];
-  }) => {
-    console.log(item, "createLine");
+  const createLineEvent = (
+    item: {
+      routeName?: string;
+      _id: any;
+      isEdit?: boolean;
+      isSelected?: boolean;
+      routerColor?: string;
+      routerGroup?: { name: string; point: {}; order: number }[];
+    },
+    map: Map | null
+  ) => {
+    console.log(item, map, "createLine");
   };
   return { addEvent, pending, createLineEvent };
 };

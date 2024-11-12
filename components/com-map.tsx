@@ -12,6 +12,7 @@ import OSM from "ol/source/OSM";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import "./map.css";
+import { useMapModal } from "@/store/use-map-modal";
 interface MapProps {
   resize?: boolean;
   width?: number | string;
@@ -88,6 +89,7 @@ export default class ComMap extends Component<MapProps, State> {
         attribution: false,
       }).extend([new FullScreen()]),
     });
+    useMapModal.getState().updateMap(this.map);
     this.bindPopupCloser();
     this.mapPopup();
   };
