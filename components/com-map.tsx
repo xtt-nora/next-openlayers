@@ -12,6 +12,11 @@ import OSM from "ol/source/OSM";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import "./map.css";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { api } from "@/convex/_generated/api";
+import { toast } from "sonner";
+import { Id } from "@/convex/_generated/dataModel";
+import { useRouteplanModal } from "@/store/use-route-modal";
 interface MapProps {
   resize?: boolean;
   width?: number | string;
@@ -19,6 +24,10 @@ interface MapProps {
   center?: [number, number]; // [经度, 纬度]
   zoom?: number;
   search?: string;
+  issave?: boolean;
+  isshare?: boolean;
+  isadd?: boolean;
+  addEvent?: (data: any) => void;
 }
 interface State {
   zoomLevel: number;
@@ -30,6 +39,9 @@ export default class ComMap extends Component<MapProps, State> {
     height: "100%",
     center: [0, 0], // 默认经纬度
     zoom: 4, // 默认 zoom 级别
+    issave: false,
+    isshare: false,
+    isadd: false,
   };
   mapRef: React.RefObject<HTMLDivElement>;
   map: Map | null;
@@ -37,6 +49,7 @@ export default class ComMap extends Component<MapProps, State> {
   popupContainerRef = React.createRef<HTMLDivElement>();
   popupContentRef = React.createRef<HTMLDivElement>();
   popupCloserRef = React.createRef<HTMLAnchorElement>();
+  shareButtonRef = React.createRef<HTMLDivElement>();
   popup: Overlay;
   constructor(props: MapProps) {
     super(props);
@@ -54,6 +67,7 @@ export default class ComMap extends Component<MapProps, State> {
       },
     });
   }
+
   //初始化
   init = () => {
     if (!this.mapRef.current || this.map) return;
@@ -119,6 +133,16 @@ export default class ComMap extends Component<MapProps, State> {
       this.popup.setPosition(coordinate);
     });
   }
+  shareEvent(data: any, evt: any) {
+    alert("分享!");
+    console.log(data, evt, "evt");
+  }
+  saveEvent(data: any, evt: any) {
+    alert("保存!");
+  }
+  addEvent(data: any, evt: any) {
+    this.props.addEvent && this.props.addEvent(data);
+  }
   searchLocation = async (search: string) => {
     this.map?.removeLayer(this.vectorLayer);
     const response = await fetch(
@@ -148,13 +172,25 @@ export default class ComMap extends Component<MapProps, State> {
       this.map?.addLayer(this.vectorLayer);
 
       const content = this.popupContentRef.current;
+      const buttonHTML = {
+        isadd: `<button id="addButton">添加</button><button id="shareButton">分享</button>`,
+        issave: `<button id="saveButton">保存</button> <button id="shareButton">分享</button>`,
+      }[this.props.isadd ? "isadd" : "issave"];
+
       if (content) {
         content.innerHTML = `
         <p>名称：${data[0].name}</p>
-        <button id="shareButton">分享</button>
-        <button id="addButton">添加</button>
+        <div style="display:flex;flex-direction: row;flex-wrap: nowrap;justify-content: space-between;align-items: center;">
+      ${buttonHTML}
+        <div>
       `;
       }
+      const shareButton = document.getElementById("shareButton");
+      const saveButton = document.getElementById("saveButton");
+      const addButton = document.getElementById("addButton");
+      shareButton && shareButton.addEventListener("click", this.shareEvent.bind(this, data));
+      saveButton && saveButton.addEventListener("click", this.saveEvent.bind(this, data));
+      addButton && addButton.addEventListener("click", this.addEvent.bind(this, data));
       this.popup.setPosition(location);
     } else {
       alert("地点未找到！");

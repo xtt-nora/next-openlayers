@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { defineSchema, defineTable } from "convex/server";
+import { title } from "process";
 
 export default defineSchema({
   user: defineTable({
@@ -29,4 +30,31 @@ export default defineSchema({
     .searchIndex("search_title", {
       searchField: "title",
     }),
+  // routeplan: defineTable({
+  //   mapId: v.id("map"),
+  //   routeName: v.string(),
+  //   isEdit: v.boolean(),
+  //   isSelected: v.boolean(),
+  //   routerColor: v.string(),
+  // }).index("by_mapId", ["mapId"]),
+  // routerGroup: defineTable({
+  //   routeplanId: v.id("routeplan"),
+  //   name: v.string(),
+  //   point: v.optional(v.array(v.number())),
+  //   order: v.number(),
+  // }).index("by_routeplanId", ["routeplanId"]),
+  routeplan: defineTable({
+    mapId: v.id("map"),
+    routeName: v.string(),
+    isEdit: v.boolean(),
+    isSelected: v.boolean(),
+    routerColor: v.string(),
+    routerGroup: v.array(
+      v.object({
+        name: v.string(),
+        point: v.optional(v.array(v.number())), // 点信息，可选
+        order: v.number(),
+      })
+    ),
+  }).index("by_mapId", ["mapId"]),
 });

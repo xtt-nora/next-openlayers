@@ -10,29 +10,37 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { api } from "@/convex/_generated/api";
+import { useApiMutation } from "@/hooks/use-api-mutation";
 import {
   GitBranchPlus,
   Save,
   Edit3,
   MoreVertical,
-  User,
-  CreditCard,
-  Settings,
-  Keyboard,
-  Users,
-  Plus,
-  Github,
-  LifeBuoy,
-  Cloud,
-  LogOut,
   Waypoints,
   Trash2,
   SquareArrowOutUpRight,
   ArrowDownToLine,
 } from "lucide-react";
-import { useState } from "react";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { Id } from "@/convex/_generated/dataModel";
+import { useRouteplanModal } from "@/store/use-route-modal";
+import { useQuery } from "convex/react";
+interface RoutePlanProps {
+  mapid: any;
+}
+type RouteListItem = {
+  _id: string;
+  isEdit: boolean;
+  isSelected: boolean;
+  mapId: string;
+  routeName: string;
+  routerColor: string;
+  routerGroup: Array<any>;
+};
 
-export const RoutePlan = () => {
+export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
   const list = [
     {
       icon: GitBranchPlus,
@@ -43,70 +51,92 @@ export const RoutePlan = () => {
       title: "保存数据",
     },
   ];
-  const [routeList, setRouteList] = useState([
-    {
-      routeName: "未知路线",
-      id: 0,
-      isEdit: false,
-      isSelected: true,
-      routerColor: "#409EFF",
-      routerGroup: [
-        { name: "TravelNote", point: {}, order: 1 },
-        { name: "镰仓", point: {}, order: 2 },
-        { name: "秋叶原", point: {}, order: 3 },
-        { name: "银座", point: {}, order: 4 },
-      ],
-    },
-  ]);
+  const [routeList, setRouteList] = useState<RouteListItem[]>([]);
+  const routeListData = useQuery(api.routeplan.get, { mapId: mapid as Id<"map"> });
+  useEffect(() => {
+    if (routeListData) setRouteList(routeListData);
+  }, [routeListData]);
+  // const [routeList, setRouteList] = useState([
+  //   {
+  //     routeName: "未知路线",
+  //     id: 0,
+  //     isEdit: false,
+  //     isSelected: true,
+  //     routerColor: "#409EFF",
+  //     routerGroup: [
+  //       { name: "TravelNote", point: {}, order: 1 },
+  //       { name: "镰仓", point: {}, order: 2 },
+  //       { name: "秋叶原", point: {}, order: 3 },
+  //       { name: "银座", point: {}, order: 4 },
+  //     ],
+  //   },
+  // ]);
+  const { updateRouteplanId } = useRouteplanModal();
+  const { mutate, pending } = useApiMutation(api.routeplan.addPlans);
   const clickEvent = (title: string) => {
     if (title === "保存数据") {
       console.log("保存数据");
     } else {
-      setRouteList((prevList) => [
-        ...prevList,
-        {
-          routeName: "新建路线",
-          id: routeList.length,
-          isEdit: false,
-          isSelected: false,
-          routerColor: "#409EFF",
-          routerGroup: [],
-        },
-      ]);
+      // setRouteList((prevList) => [
+      //   ...prevList,
+      //   {
+      //     routeName: "新建路线",
+      //     isEdit: false,
+      //     isSelected: false,
+      //     routerColor: "#409EFF",
+      //     routerGroup: [],
+      //   },
+      // ]);
+      mutate({
+        mapId: mapid,
+        routeName: "新建路线",
+        isEdit: false,
+        isSelected: false,
+        routerColor: "#409EFF",
+        routerGroup: [],
+      })
+        .then((routeplanId: Id<"routeplan">) => {
+          toast.info("Gig created successfully");
+        })
+        .catch(() => {
+          toast.error("Failed to create gig");
+        });
     }
   };
 
   const selectItem = (item: {
     routeName?: string;
-    id: any;
+    _id: any;
     isEdit?: boolean;
     isSelected?: boolean;
     routerColor?: string;
     routerGroup?: { name: string; point: {}; order: number }[];
   }) => {
+    console.log(item, "选中");
+    updateRouteplanId(item._id);
     setRouteList((prevList) =>
       prevList.map((i) => ({
         ...i,
-        isSelected: i.id === item.id,
+        isSelected: i._id === item._id,
       }))
     );
   };
 
   const editName = (item: {
     routeName?: string;
-    id: any;
+    _id: any;
     isEdit?: boolean;
     isSelected?: boolean;
     routerColor?: string;
     routerGroup?: { name: string; point: {}; order: number }[];
   }) => {
-    setRouteList((prevList) => prevList.map((i) => (i.id === item.id ? { ...i, isEdit: true } : i)));
+    setRouteList((prevList) => prevList.map((i) => (i._id === item._id ? { ...i, isEdit: true } : i)));
   };
 
   const saveName = (
     item: {
       routeName?: string;
-      id: any;
+      _id: any;
       isEdit?: boolean;
       isSelected?: boolean;
       routerColor?: string;
@@ -115,7 +145,7 @@ export const RoutePlan = () => {
     newName: string
   ) => {
     setRouteList((prevList) =>
-      prevList.map((i) => (i.id === item.id ? { ...i, routeName: newName, isEdit: false } : i))
+      prevList.map((i) => (i._id === item._id ? { ...i, routeName: newName, isEdit: false } : i))
     );
   };
   const [background, setBackground] = useState("#B4D455");

@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import qs from "query-string";
 import { useSearchModal } from "@/store/use-search-modal";
 
 export const SearchInput = () => {
