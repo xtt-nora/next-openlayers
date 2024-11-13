@@ -54,6 +54,7 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
       title: "保存数据",
     },
   ];
+  const [isRun, setRunState] = useState(false);
   const { map } = useMapModal();
   const { createLineEvent } = useAddEvent();
   const [routeList, setRouteList] = useState<RouteListItem[]>([]);
@@ -162,9 +163,24 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
       routerColor?: string;
       routerGroup?: { name: string; point: {}; order: number }[];
     },
-    map: Map | null
+    map: Map | null,
+    isRun: false
   ) => {
-    createLineEvent(item, map);
+    createLineEvent(item, map, isRun);
+  };
+  const runLine = (
+    item: {
+      routeName?: string;
+      _id: any;
+      isEdit?: boolean;
+      isSelected?: boolean;
+      routerColor?: string;
+      routerGroup?: { name: string; point: {}; order: number }[];
+    },
+    map: Map | null,
+    isRun: true
+  ) => {
+    createLineEvent(item, map, isRun);
   };
   const [background, setBackground] = useState("#B4D455");
   return (
@@ -209,7 +225,7 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
                     <DropdownMenuLabel>路线规划</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                      <DropdownMenuItem onClick={() => createLine(item, map)}>
+                      <DropdownMenuItem onClick={() => createLine(item, map, false)}>
                         <Waypoints />
                         <span>形成路线</span>
                       </DropdownMenuItem>
@@ -218,16 +234,16 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
                         <span>删除路线</span>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
+                    <DropdownMenuLabel>路线进阶</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
+                      <DropdownMenuItem onClick={() => runLine(item, map, true)}>
+                        <SquareArrowOutUpRight />
+                        <span>运动轨迹</span>
+                      </DropdownMenuItem>
                       <DropdownMenuItem>
                         <SquareArrowOutUpRight />
                         <span>分享</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <ArrowDownToLine />
-                        <span>保存</span>
-                        <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                   </DropdownMenuContent>
