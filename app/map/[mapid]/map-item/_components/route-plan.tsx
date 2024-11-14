@@ -51,7 +51,7 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
     },
     {
       icon: Save,
-      title: "保存数据",
+      title: "导出数据",
     },
   ];
   const [isRun, setRunState] = useState(false);
@@ -65,6 +65,8 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
   const { updateRouteplanId, routeplanId } = useRouteplanModal();
   const { mutate, pending } = useApiMutation(api.routeplan.addPlans);
   const { mutate: edit, pending: editPending } = useApiMutation(api.routeplan.editName);
+  const { mutate: editColor, pending: colorPending } = useApiMutation(api.routeplan.editColor);
+  const { mutate: delRoute, pending: delPending } = useApiMutation(api.routeplan.delRoute);
   const clickEvent = (title: string) => {
     if (title === "保存数据") {
     } else {
@@ -167,7 +169,15 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
   ) => {
     createLineEvent(item, map, isRun);
   };
-  const [background, setBackground] = useState("#B4D455");
+  const setBackground = (newColor: string, id: string) => {
+    setRouteList((prevList) =>
+      prevList.map((route) => (route._id === id ? { ...route, routerColor: newColor } : route))
+    );
+    editColor({ routeplanId, routerColor: newColor });
+  };
+  const deleteLine = () => {
+    delRoute({ routeplanId });
+  };
   return (
     <div className="flex flex-col w-full h-full">
       <div className="h-5 w-full flex my-2.5 justify-between">
@@ -201,7 +211,10 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
                 </div>
               )}
               <div className="flex">
-                <GradientPicker background={background} setBackground={setBackground} />
+                <GradientPicker
+                  background={item.routerColor}
+                  setBackground={(color) => setBackground(color, item._id)}
+                />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <MoreVertical size={18} />
@@ -214,7 +227,7 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
                         <Waypoints />
                         <span>形成路线</span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => deleteLine()}>
                         <Trash2 color="#f50000" />
                         <span>删除路线</span>
                       </DropdownMenuItem>

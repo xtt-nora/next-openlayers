@@ -79,3 +79,28 @@ export const editName = mutation({
     return updatedRouteName;
   },
 });
+
+export const editColor = mutation({
+  args: {
+    routeplanId: v.id("routeplan"),
+    routerColor: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { routeplanId, routerColor } = args;
+    const updatedRouteColor = await ctx.db.patch(routeplanId, {
+      routerColor: routerColor,
+    });
+    return updatedRouteColor;
+  },
+});
+
+export const delRoute = mutation({
+  args: {
+    routeplanId: v.id("routeplan"),
+  },
+  handler: async (ctx, args) => {
+    const { routeplanId } = args;
+    const deleteRoute = await ctx.db.delete(routeplanId);
+    return deleteRoute;
+  },
+});
