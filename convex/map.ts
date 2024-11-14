@@ -1,9 +1,13 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+
 export const get = query({
   args: {},
   handler: async (ctx) => {
-    return await ctx.db.query("map").collect();
+    const list = await ctx.db.query("map").collect();
+    list.map(async (item) => {
+      const image = await ctx.db.get(item.bgImg);
+    });
   },
 });
 
@@ -13,7 +17,7 @@ export const create = mutation({
     description: v.string(),
     badge: v.string(),
     img: v.string(),
-    bgImg: v.string(),
+    bgImg: v.id("mapMedia"),
     isLocked: v.boolean(),
     userId: v.string(),
   },
@@ -37,7 +41,7 @@ export const create = mutation({
       title: args.title,
       badge: args.badge,
       img: identity.pictureUrl || "https://default-image-url.com/default.png",
-      bgImg: "https://github.com/shadcn.png",
+      bgImg: args.bgImg,
       description: args.description,
       userId: user._id!,
       isLocked: args.isLocked,

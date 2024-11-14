@@ -11,12 +11,17 @@ import { Id } from "@/convex/_generated/dataModel";
 // import { auth } from "@clerk/nextjs/server";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useState } from "react";
+import { generateUploadUrl } from "@/convex/mapMedia";
+import { useMutation } from "convex/react";
 
 export const CreateForm = () => {
-  //   const { userId, redirectToSignIn } = await auth();
+  const generateUploadUrl = useMutation(api.mapMedia.generateUploadUrl);
   const router = useRouter();
-  //   if (!userId) return redirectToSignIn();
   const { mutate, pending } = useApiMutation(api.map.create);
+  const { mutate: setImage, pending: imagePending } = useApiMutation(api.mapMedia.sendImage);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
   const FormSchema = z.object({
     title: z.string().min(2, {
       message: "Username must be at least 2 characters.",
@@ -28,7 +33,6 @@ export const CreateForm = () => {
     }),
     isLocked: z.boolean().default(false).optional(),
   });
-
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -39,11 +43,21 @@ export const CreateForm = () => {
       isLocked: false,
     },
   });
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const postUrl = await generateUploadUrl();
+    const result = await fetch(postUrl, {
+      method: "POST",
+      headers: { "Content-Type": selectedImage!.type },
+      body: selectedImage,
+    });
+    const { storageId } = await result.json();
+    const mediaId = await setImage({ storageId, format: "image", userId: "j57fr3sdx1e2t2acp7c3ecypm5741nam" });
+    console.log(mediaId, "mediaId");
+
     mutate({
       title: data.title,
       description: data.description,
-      bgImg: data.bgImg,
+      bgImg: mediaId,
       badge: data.badge,
       isLocked: data.isLocked,
       img: "https://github.com/shadcn.png",
@@ -93,7 +107,13 @@ export const CreateForm = () => {
             <FormItem>
               <FormLabel>Picture</FormLabel>
               <FormControl>
-                <Input id="picture" type="file" placeholder="请选择照片" {...field} />
+                <Input
+                  id="picture"
+                  type="file"
+                  placeholder="请选择照片"
+                  {...field}
+                  onChange={(event) => setSelectedImage(event.target.files![0])}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

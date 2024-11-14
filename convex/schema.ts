@@ -22,7 +22,7 @@ export default defineSchema({
     description: v.string(),
     badge: v.string(),
     img: v.string(),
-    bgImg: v.string(),
+    bgImg: v.id("mapMedia"),
     isLocked: v.boolean(),
   })
     .index("by_userId", ["userId"])
@@ -30,19 +30,6 @@ export default defineSchema({
     .searchIndex("search_title", {
       searchField: "title",
     }),
-  // routeplan: defineTable({
-  //   mapId: v.id("map"),
-  //   routeName: v.string(),
-  //   isEdit: v.boolean(),
-  //   isSelected: v.boolean(),
-  //   routerColor: v.string(),
-  // }).index("by_mapId", ["mapId"]),
-  // routerGroup: defineTable({
-  //   routeplanId: v.id("routeplan"),
-  //   name: v.string(),
-  //   point: v.optional(v.array(v.number())),
-  //   order: v.number(),
-  // }).index("by_routeplanId", ["routeplanId"]),
   routeplan: defineTable({
     mapId: v.id("map"),
     routeName: v.string(),
@@ -57,4 +44,12 @@ export default defineSchema({
       })
     ),
   }).index("by_mapId", ["mapId"]),
+
+  mapMedia: defineTable({
+    storageId: v.id("_storage"),
+    format: v.string(),
+    userId: v.id("user"),
+  })
+    .index("by_userId", ["userId"])
+    .index("by_storageId", ["storageId"]),
 });
