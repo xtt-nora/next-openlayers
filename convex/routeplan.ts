@@ -50,7 +50,6 @@ export const addSubRoute = mutation({
   },
   handler: async (ctx, args) => {
     const { routeplanId, name, point, order } = args;
-    console.log("Received routeplanId:", routeplanId);
     const allRouteplans = await ctx.db.query("routeplan").collect();
     const routeplan = allRouteplans.find((item) => String(item._id) === String(routeplanId));
     if (!routeplan) {
@@ -64,5 +63,19 @@ export const addSubRoute = mutation({
       routerGroup: updatedRouterGroup,
     });
     return updatedRouteplan;
+  },
+});
+
+export const editName = mutation({
+  args: {
+    routeplanId: v.id("routeplan"),
+    routeName: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { routeplanId, routeName } = args;
+    const updatedRouteName = await ctx.db.patch(routeplanId, {
+      routeName: routeName,
+    });
+    return updatedRouteName;
   },
 });

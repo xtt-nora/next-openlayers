@@ -40,7 +40,6 @@ export const CreateForm = () => {
     },
   });
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data, "data");
     mutate({
       title: data.title,
       description: data.description,

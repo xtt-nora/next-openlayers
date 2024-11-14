@@ -62,27 +62,11 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
   useEffect(() => {
     if (routeListData) setRouteList(routeListData);
   }, [routeListData]);
-
-  // const [routeList, setRouteList] = useState([
-  //   {
-  //     routeName: "未知路线",
-  //     id: 0,
-  //     isEdit: false,
-  //     isSelected: true,
-  //     routerColor: "#409EFF",
-  //     routerGroup: [
-  //       { name: "TravelNote", point: {}, order: 1 },
-  //       { name: "镰仓", point: {}, order: 2 },
-  //       { name: "秋叶原", point: {}, order: 3 },
-  //       { name: "银座", point: {}, order: 4 },
-  //     ],
-  //   },
-  // ]);
-  const { updateRouteplanId } = useRouteplanModal();
+  const { updateRouteplanId, routeplanId } = useRouteplanModal();
   const { mutate, pending } = useApiMutation(api.routeplan.addPlans);
+  const { mutate: edit, pending: editPending } = useApiMutation(api.routeplan.editName);
   const clickEvent = (title: string) => {
     if (title === "保存数据") {
-      console.log("保存数据");
     } else {
       // setRouteList((prevList) => [
       //   ...prevList,
@@ -153,6 +137,7 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
     setRouteList((prevList) =>
       prevList.map((i) => (i._id === item._id ? { ...i, routeName: newName, isEdit: false } : i))
     );
+    edit({ routeplanId, routeName: newName });
   };
   const createLine = (
     item: {

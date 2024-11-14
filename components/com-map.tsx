@@ -122,7 +122,6 @@ export default class ComMap extends Component<MapProps, State> {
   mapPopup() {
     this.map?.on("click", (evt) => {
       const coordinate = evt.coordinate;
-      console.log(coordinate, evt);
       const content = this.popupContentRef.current;
       if (content) {
         content.innerHTML = "<p>You clicked here:</p><code>" + coordinate + "</code>";
@@ -132,7 +131,6 @@ export default class ComMap extends Component<MapProps, State> {
   }
   shareEvent(data: any, evt: any) {
     alert("分享!");
-    console.log(data, evt, "evt");
   }
   saveEvent(data: any, evt: any) {
     alert("保存!");
@@ -146,7 +144,6 @@ export default class ComMap extends Component<MapProps, State> {
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(search)}`
     );
     const data = await response.json();
-    console.log(data, "data");
     if (data && data.length > 0) {
       const { lat, lon } = data[0];
       const location = [parseFloat(lon), parseFloat(lat)];

@@ -39,7 +39,6 @@ export const useAddEvent = () => {
     map: Map | null,
     isRun: boolean
   ) => {
-    console.log(item.routerColor);
     let lastTime: any;
     let distance = 0;
     if (!item.routerGroup || !map) return;
