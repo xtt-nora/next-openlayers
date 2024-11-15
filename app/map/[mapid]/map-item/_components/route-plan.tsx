@@ -68,7 +68,7 @@ export const RoutePlan: React.FC<RoutePlanProps> = ({ mapid }) => {
   const { mutate: editColor, pending: colorPending } = useApiMutation(api.routeplan.editColor);
   const { mutate: delRoute, pending: delPending } = useApiMutation(api.routeplan.delRoute);
   const clickEvent = (title: string) => {
-    if (title === "保存数据") {
+    if (title === "导出数据") {
     } else {
       // setRouteList((prevList) => [
       //   ...prevList,

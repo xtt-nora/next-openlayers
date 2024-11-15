@@ -28,8 +28,22 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "upload.wikimedia.org",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "scintillating-gecko-931.convex.cloud",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "github.com",
+        pathname: "/**",
+      },
     ],
-    domains: ["scintillating-gecko-931.convex.cloud", "github.com"],
   },
 };
 
