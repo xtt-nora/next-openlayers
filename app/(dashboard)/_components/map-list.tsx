@@ -62,7 +62,7 @@ export const MapList = () => {
               </div>
               <div className=" whitespace-nowrap overflow-hidden text-ellipsis">{collect.title}</div>
             </div>
-            <div>
+            <div className=" z-[20]">
               <div className=" pb-2 pl-2">
                 <Badge variant="secondary">{collect.badge}</Badge>
               </div>
