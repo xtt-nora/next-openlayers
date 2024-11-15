@@ -22,7 +22,7 @@ export default defineSchema({
     description: v.string(),
     badge: v.string(),
     img: v.string(),
-    bgImg: v.id("mapMedia"),
+    bgImg: v.string(),
     isLocked: v.boolean(),
   })
     .index("by_userId", ["userId"])

@@ -11,9 +11,9 @@ import { Id } from "@/convex/_generated/dataModel";
 // import { auth } from "@clerk/nextjs/server";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { generateUploadUrl } from "@/convex/mapMedia";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 
 export const CreateForm = () => {
   const generateUploadUrl = useMutation(api.mapMedia.generateUploadUrl);
@@ -21,7 +21,6 @@ export const CreateForm = () => {
   const { mutate, pending } = useApiMutation(api.map.create);
   const { mutate: setImage, pending: imagePending } = useApiMutation(api.mapMedia.sendImage);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-
   const FormSchema = z.object({
     title: z.string().min(2, {
       message: "Username must be at least 2 characters.",
@@ -52,12 +51,10 @@ export const CreateForm = () => {
     });
     const { storageId } = await result.json();
     const mediaId = await setImage({ storageId, format: "image", userId: "j57fr3sdx1e2t2acp7c3ecypm5741nam" });
-    console.log(mediaId, "mediaId");
-
     mutate({
       title: data.title,
       description: data.description,
-      bgImg: mediaId,
+      bgImg: storageId,
       badge: data.badge,
       isLocked: data.isLocked,
       img: "https://github.com/shadcn.png",

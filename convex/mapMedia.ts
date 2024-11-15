@@ -16,10 +16,10 @@ export const sendImage = mutation({
     return mediaId;
   },
 });
-export const getImage = query({
-  args: { storageId: v.id("mapMedia") },
+export const getImageUrl = query({
+  args: { storageId: v.optional(v.id("_storage")) },
   handler: async (ctx, args) => {
-    const image = await ctx.db.get(args.storageId);
-    return image;
+    if (!args.storageId) return null;
+    return await ctx.storage.getUrl(args.storageId);
   },
 });

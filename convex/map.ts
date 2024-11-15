@@ -4,10 +4,7 @@ import { v } from "convex/values";
 export const get = query({
   args: {},
   handler: async (ctx) => {
-    const list = await ctx.db.query("map").collect();
-    list.map(async (item) => {
-      const image = await ctx.db.get(item.bgImg);
-    });
+    return await ctx.db.query("map").collect();
   },
 });
 
@@ -17,14 +14,13 @@ export const create = mutation({
     description: v.string(),
     badge: v.string(),
     img: v.string(),
-    bgImg: v.id("mapMedia"),
+    bgImg: v.id("_storage"),
     isLocked: v.boolean(),
     userId: v.string(),
   },
   handler: async (ctx, args) => {
     console.log(ctx, "ctx");
     const identity = await ctx.auth.getUserIdentity();
-    console.log(identity, "identity");
     if (!identity) {
       throw new Error("Unauthorized");
     }

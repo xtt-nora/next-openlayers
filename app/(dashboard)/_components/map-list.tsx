@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Loading } from "@/components/auth/loading";
+import { ConvexImage } from "@/components/convex-image";
 type MapDataItem = {
   _id: string;
   _creationTime: number;
@@ -51,7 +52,8 @@ export const MapList = () => {
             onClick={() => router.push(`/map/${collect._id}/map-item`)}
           >
             <div className=" w-full h-[150px]">
-              <img src={collect.bgImg} className="w-full h-full" />
+              {/* <img src={collect.bgImg} className="w-full h-full" /> */}
+              <ConvexImage storageId={collect.bgImg} title="图片" />
               <div className=" border-b border-b-[rgba(55,53,47,0.09)]"></div>
             </div>
             <div className="flex p-2 relative">
