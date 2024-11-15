@@ -1,34 +1,59 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
-import { mapData } from "./data";
+import { useEffect, useState } from "react";
 import { LockKeyhole, LockKeyholeOpen, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Loading } from "@/components/auth/loading";
+import { ConvexImage } from "@/components/convex-image";
+type MapDataItem = {
+  _id: string;
+  _creationTime: number;
+  title: string;
+  userId: string;
+  description: string;
+  badge: string;
+  img: string;
+  bgImg: string;
+  isLocked: boolean;
+};
 
 export const MapList = () => {
-  const [data, setData] = useState(mapData);
+  const mapsData = useQuery(api.map.get);
+  const [data, setData] = useState<MapDataItem[]>([]);
+  useEffect(() => {
+    if (mapsData) setData(mapsData);
+  }, [mapsData]);
   const router = useRouter();
   const deleteItem = (collect: any) => {
-    setData((prevData) => prevData.filter((item) => item.id !== collect.id));
+    setData((prevData) => prevData.filter((item) => item._id !== collect._id));
   };
   const updateLocked = (collect: any) => {
     setData((prevData) =>
-      prevData.map((item) => (item.id === collect.id ? { ...item, isLocked: !item.isLocked } : item))
+      prevData.map((item) => (item._id === collect._id ? { ...item, isLocked: !item.isLocked } : item))
     );
   };
-
+  if (!mapsData) {
+    return (
+      <div className="w-full h-[calc(100%-120px)] flex justify-center items-center">
+        <Loading />
+      </div>
+    ); // 数据加载时显示的内容
+  }
   return (
     <div className=" overflow-auto h-[calc(100%-120px)] ">
       <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-4 pt-4 pb-1">
-        {data.map((collect, index) => (
+        {data?.map((collect, index) => (
           <div
             className="group flex relative text-inherit no-underline select-none transition w-full bg-white duration-100 ease-out cursor-pointer shadow-[rgba(15,15,15,0.07)_0px_0px_0px_1px,rgba(15,15,15,0.05)_0px_2px_4px] rounded-[10px] overflow-hidden static h-full flex-col"
             key={index}
-            onClick={() => router.push(`/map/${collect.id}/map-item`)}
+            onClick={() => router.push(`/map/${collect._id}/map-item`)}
           >
             <div className=" w-full h-[150px]">
-              <img src={collect.bgImg} className="w-full h-full" />
+              {/* <img src={collect.bgImg} className="w-full h-full" /> */}
+              <ConvexImage storageId={collect.bgImg} title="图片" />
               <div className=" border-b border-b-[rgba(55,53,47,0.09)]"></div>
             </div>
             <div className="flex p-2 relative">

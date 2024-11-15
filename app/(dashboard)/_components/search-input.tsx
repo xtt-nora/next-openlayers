@@ -4,25 +4,17 @@ import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import qs from "query-string";
+import { useSearchModal } from "@/store/use-search-modal";
+
 export const SearchInput = () => {
   const router = useRouter();
   const [value, setValue] = useState("");
+  const { updateSearch } = useSearchModal();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
-  const handleSubmit = () => {
-    const url = qs.stringifyUrl(
-      {
-        url: "/",
-        query: {
-          search: value,
-        },
-      },
-      { skipEmptyString: true, skipNull: true }
-    );
-
-    router.push(url);
+  const handleSubmit = async () => {
+    updateSearch(value);
   };
   return (
     <div className="w-full relative flex">
