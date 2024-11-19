@@ -17,7 +17,7 @@ export default function Home() {
       title: "我的地图",
     },
     {
-      id: 1,
+      id: 2,
       title: "足迹",
     },
   ];
