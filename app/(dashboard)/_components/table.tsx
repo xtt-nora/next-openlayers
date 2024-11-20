@@ -26,7 +26,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import { useRouter } from "next/navigation";
 export type Payment = {
   _id: string;
@@ -81,7 +80,11 @@ export const columns: ColumnDef<Payment>[] = [
       const router = useRouter();
       return (
         <>
-          <Button variant="ghost" className="h-8 w-8 p-0" onClick={() => router.push(`/collect/12345/collect-item`)}>
+          <Button
+            variant="ghost"
+            className="h-8 w-8 p-0"
+            onClick={() => router.push(`/collect/${row.original._id}/collect-item`)}
+          >
             <span className="sr-only">Open Detail</span>
             <FolderOpenDot />
           </Button>

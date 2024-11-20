@@ -138,8 +138,8 @@ export const useAddEvent = () => {
  * @returns void props
  */
 export const useSaveEvent = () => {
-  const saveEvent = () => {
-    console.log("baocun");
+  const saveEvent = (data: any) => {
+    console.log("baocun", data);
   };
   return { saveEvent };
 };

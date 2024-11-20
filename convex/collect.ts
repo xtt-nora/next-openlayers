@@ -7,7 +7,16 @@ export const get = query({
     return await ctx.db.query("collect").collect();
   },
 });
-
+export const getById = query({
+  args: {
+    id: v.id("collect"),
+  },
+  handler: async (ctx, args) => {
+    const data = await ctx.db.get(args.id);
+    if (data === null) return;
+    return data;
+  },
+});
 export const create = mutation({
   args: {
     collectName: v.string(),
@@ -32,5 +41,15 @@ export const create = mutation({
       badge: args.badge,
     });
     return collectId;
+  },
+});
+export const addCollectData = mutation({
+  args: {
+    collectId: v.id("collect"),
+    name: v.string(),
+    point: v.optional(v.array(v.number())),
+  },
+  handler: (ctx, args) => {
+    const { collectId, name, point } = args;
   },
 });

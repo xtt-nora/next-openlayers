@@ -32,9 +32,9 @@ export const CreateCollect = () => {
     createCollect({
       collectName: values.collectName,
       badge: values.badge,
-    }).then((createCollect: Id<"collect">) => {
+    }).then((collectId: Id<"collect">) => {
       setLoading(false);
-      router.push(`/collect/${createCollect}/collect-item`);
+      router.push(`/collect/${collectId}/collect-item`);
     });
   }
   return (
