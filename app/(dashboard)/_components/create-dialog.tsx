@@ -2,10 +2,8 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -14,8 +12,24 @@ import { Plus } from "lucide-react";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { api } from "@/convex/_generated/api";
 import { CreateForm } from "./createForm";
-export const CreateDialog = () => {
+import { CreateCollect } from "./create-collect";
+import { ComponentType } from "react";
+interface Props {
+  value: string;
+}
+type valueReflex = {
+  [key: string]: {
+    str: string;
+    component: ComponentType;
+  };
+};
+export const CreateDialog = ({ value }: Props) => {
   const { mutate, pending } = useApiMutation(api.map.create);
+  const valueName: valueReflex = {
+    我的地图: { str: "Create Map", component: CreateForm },
+    收藏: { str: "Create Collect List", component: CreateCollect },
+  };
+  const SelectedComponent = valueName[value].component;
   return (
     <div>
       <Dialog>
@@ -27,10 +41,10 @@ export const CreateDialog = () => {
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Create Map</DialogTitle>
-            <DialogDescription>Do you want to create new map?</DialogDescription>
+            <DialogTitle>{valueName[value].str}</DialogTitle>
+            <DialogDescription>Do you want to {valueName[value].str}?</DialogDescription>
           </DialogHeader>
-          <CreateForm />
+          <SelectedComponent />
         </DialogContent>
       </Dialog>
     </div>

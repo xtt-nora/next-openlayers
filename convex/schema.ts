@@ -52,4 +52,17 @@ export default defineSchema({
   })
     .index("by_userId", ["userId"])
     .index("by_storageId", ["storageId"]),
+  collect: defineTable({
+    userId: v.id("user"),
+    collectName: v.string(),
+    badge: v.string(),
+    collectList: v.optional(
+      v.array(
+        v.object({
+          name: v.string(),
+          point: v.optional(v.array(v.number())),
+        })
+      )
+    ),
+  }).index("by_userId", ["userId"]),
 });

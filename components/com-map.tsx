@@ -24,6 +24,7 @@ interface MapProps {
   isshare?: boolean;
   isadd?: boolean;
   addEvent?: (data: any) => void;
+  saveEvent?: (data: any) => void;
 }
 interface State {
   zoomLevel: number;
@@ -33,8 +34,8 @@ export default class ComMap extends Component<MapProps, State> {
     resize: false,
     width: "100%",
     height: "100%",
-    center: [0, 0], // 默认经纬度
-    zoom: 4, // 默认 zoom 级别
+    center: [0, 0],
+    zoom: 4,
     issave: false,
     isshare: false,
     isadd: false,
@@ -133,7 +134,7 @@ export default class ComMap extends Component<MapProps, State> {
     alert("分享!");
   }
   saveEvent(data: any, evt: any) {
-    alert("保存!");
+    this.props.saveEvent && this.props.saveEvent(data);
   }
   addEvent(data: any, evt: any) {
     this.props.addEvent && this.props.addEvent(data);

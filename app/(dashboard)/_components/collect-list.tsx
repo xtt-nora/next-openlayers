@@ -1,5 +1,4 @@
 "use client";
-import { initdata } from "./data";
 import * as React from "react";
 import {
   ColumnDef,
@@ -24,12 +23,27 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { columns, Payment } from "./table";
 import { ChevronDown } from "lucide-react";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { useEffect, useState } from "react";
+type CollectDataItem = {
+  _id: string;
+  _creationTime: number;
+  userId: string;
+  badge: string;
+  collectName: string;
+};
+
 export const CollectList = () => {
+  const collectData = useQuery(api.collect.get);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-
+  const [initdata, setData] = useState<CollectDataItem[]>([]);
+  useEffect(() => {
+    if (collectData) setData(collectData);
+  }, [collectData]);
   const table = useReactTable<Payment>({
     data: initdata,
     columns,
@@ -54,8 +68,8 @@ export const CollectList = () => {
       <div className="flex items-center py-4 h-[72px]">
         <Input
           placeholder="Filter titles..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("title")?.setFilterValue(event.target.value)}
+          value={(table.getColumn("collectName")?.getFilterValue() as string) ?? ""}
+          onChange={(event) => table.getColumn("collectName")?.setFilterValue(event.target.value)}
           className="max-w-sm"
         />
         <DropdownMenu>

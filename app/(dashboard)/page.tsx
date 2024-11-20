@@ -42,7 +42,8 @@ export default function Home() {
             </div>
           ))}
         </ToggleGroup>
-        {value === "我的地图" && <CreateDialog />}
+        {/* {value === "我的地图" && <CreateDialog  value={value}/>} */}
+        <CreateDialog value={value} />
       </div>
       {value === "收藏" && (
         <>

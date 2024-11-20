@@ -9,6 +9,10 @@ import { Fill, Icon, Stroke, Style } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
 import CircleStyle from "ol/style/Circle";
 import { getVectorContext } from "ol/render";
+/**
+ * 添加 地图hook
+ * @returns void props
+ */
 export const useAddEvent = () => {
   const { routeplanId } = useRouteplanModal();
   const { mutate, pending } = useApiMutation(api.routeplan.addSubRoute);
@@ -128,4 +132,14 @@ export const useAddEvent = () => {
   };
 
   return { addEvent, pending, createLineEvent };
+};
+/**
+ * 保存 地图hook
+ * @returns void props
+ */
+export const useSaveEvent = () => {
+  const saveEvent = () => {
+    console.log("baocun");
+  };
+  return { saveEvent };
 };
