@@ -48,8 +48,27 @@ export const addCollectData = mutation({
     collectId: v.id("collect"),
     name: v.string(),
     point: v.optional(v.array(v.number())),
+    order: v.optional(v.number()),
   },
-  handler: (ctx, args) => {
+  handler: async (ctx, args) => {
     const { collectId, name, point } = args;
+    const allCollect = await ctx.db.query("collect").collect();
+    const collectById = allCollect.find((item) => String(item._id) === String(collectId));
+    const maxOrder = Math.max(0, ...(collectById?.collectList ?? []).map((item) => item.order));
+    const findName = collectById?.collectList?.find((item) => String(item.name) === String(name));
+    let newcollect = { name, point, order: maxOrder + 1 };
+    if (!collectById) {
+      throw new Error("CollectData not found");
+    }
+
+    newcollect = findName
+      ? { name: name + maxOrder, point, order: maxOrder + 1 }
+      : { name, point, order: maxOrder + 1 };
+    const updatedCollectGroup = [...(collectById.collectList || []), newcollect];
+
+    const updatedCollectList = await ctx.db.patch(collectId, {
+      collectList: updatedCollectGroup,
+    });
+    return updatedCollectList;
   },
 });

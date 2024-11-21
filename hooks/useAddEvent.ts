@@ -1,4 +1,5 @@
 import { useRouteplanModal } from "@/store/use-route-modal";
+import { useCollectModal } from "@/store/use-collect-modal";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
@@ -16,7 +17,6 @@ import { getVectorContext } from "ol/render";
 export const useAddEvent = () => {
   const { routeplanId } = useRouteplanModal();
   const { mutate, pending } = useApiMutation(api.routeplan.addSubRoute);
-
   const addEvent = (data: any) => {
     mutate({
       routeplanId: routeplanId,
@@ -138,8 +138,14 @@ export const useAddEvent = () => {
  * @returns void props
  */
 export const useSaveEvent = () => {
+  const { collectId } = useCollectModal();
+  const { mutate: addCollect, pending: collectPending } = useApiMutation(api.collect.addCollectData);
   const saveEvent = (data: any) => {
-    console.log("baocun", data);
+    addCollect({
+      collectId: collectId,
+      name: data[0].name,
+      point: [parseFloat(data[0].lon), parseFloat(data[0].lat)],
+    });
   };
-  return { saveEvent };
+  return { saveEvent, collectPending };
 };

@@ -3,7 +3,7 @@
 import React from "react";
 import { Component } from "react";
 import { Feature, Map, Overlay, View } from "ol";
-import { defaults as defaultControls, FullScreen } from "ol/control";
+import { defaults as defaultControls, FullScreen, ZoomToExtent } from "ol/control";
 import { fromLonLat } from "ol/proj";
 import { Point } from "ol/geom";
 import { Style, Icon } from "ol/style";
@@ -88,7 +88,12 @@ export default class ComMap extends Component<MapProps, State> {
         zoom: false,
         rotate: false,
         attribution: false,
-      }).extend([new FullScreen()]),
+      }).extend([
+        new FullScreen(),
+        new ZoomToExtent({
+          extent: [813079.7791264898, 5929220.284081122, 848966.9639063801, 5936863.986909639],
+        }),
+      ]),
     });
     useMapModal.getState().updateMap(this.map);
     this.bindPopupCloser();

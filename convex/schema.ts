@@ -61,6 +61,7 @@ export default defineSchema({
         v.object({
           name: v.string(),
           point: v.optional(v.array(v.number())),
+          order: v.number(),
         })
       )
     ),
