@@ -72,3 +72,19 @@ export const addCollectData = mutation({
     return updatedCollectList;
   },
 });
+export const deleteCollectData = mutation({
+  args: {
+    collectId: v.id("collect"),
+    order: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const { collectId, order } = args;
+    const allCollect = await ctx.db.query("collect").collect();
+    const collectById = allCollect.find((item) => String(item._id) === String(collectId));
+    const updateCollectList = collectById?.collectList?.filter((item) => item.order !== order);
+    await ctx.db.patch(collectId, {
+      collectList: updateCollectList,
+    });
+    return updateCollectList;
+  },
+});

@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { useCollectModal } from "@/store/use-collect-modal";
+import { useApiMutation } from "@/hooks/use-api-mutation";
 
 interface CollectParams {
   collectId: Id<"collect">;
@@ -66,12 +67,16 @@ const CollectPage = ({ params }: CollectProps) => {
     }
   }, [unwrappedParams.collectId, collectId, updateCollectId]);
   const collectData = useQuery(api.collect.getById, { id: unwrappedParams.collectId });
+  const { mutate: delCollectItem, pending: delPending } = useApiMutation(api.collect.deleteCollectData);
   const [data, setData] = useState<DataType | null>(null);
   useEffect(() => {
     if (collectData) setData(collectData);
   }, [collectData]);
   const { search } = useSearchModal();
   const { saveEvent } = useSaveEvent();
+  const del = (item: { point?: number[] | undefined; name: string; order: number }) => {
+    delCollectItem({ collectId: unwrappedParams.collectId, order: item.order });
+  };
   return (
     <div className="w-full h-full flex flex-row">
       {data && (
@@ -99,7 +104,7 @@ const CollectPage = ({ params }: CollectProps) => {
                         <Button variant="ghost" size="icon" className=" h-[24px]">
                           <GitBranchPlus />
                         </Button>
-                        <Button variant="ghost" size="icon" className=" h-[24px]">
+                        <Button variant="ghost" size="icon" className=" h-[24px]" onClick={() => del(item)}>
                           <MapPinMinus color="red" />
                         </Button>
                       </div>

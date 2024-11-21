@@ -28,6 +28,7 @@ export const CreateDialog = ({ value }: Props) => {
   const valueName: valueReflex = {
     我的地图: { str: "Create Map", component: CreateForm },
     收藏: { str: "Create Collect List", component: CreateCollect },
+    足迹: { str: "Create Footer List", component: CreateCollect },
   };
   const SelectedComponent = valueName[value].component;
   return (
