@@ -36,6 +36,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCollectModal } from "@/store/use-collect-modal";
 import { useApiMutation } from "@/hooks/use-api-mutation";
+import { useRouter } from "next/navigation";
+import { useMapModal } from "@/store/use-map-modal";
 
 interface CollectParams {
   collectId: Id<"collect">;
@@ -61,6 +63,8 @@ interface CollectProps {
 const CollectPage = ({ params }: CollectProps) => {
   const { updateCollectId, collectId } = useCollectModal();
   const unwrappedParams = use(params);
+  const router = useRouter();
+  const { map } = useMapModal();
   useEffect(() => {
     if (collectId !== unwrappedParams.collectId) {
       updateCollectId(unwrappedParams.collectId);
@@ -82,7 +86,7 @@ const CollectPage = ({ params }: CollectProps) => {
       {data && (
         <div className="w-[450px] h-full">
           <div className="mt-4 px-2">
-            <Undo2 size={32} />
+            <Undo2 size={32} onClick={() => router.push(`/`)} />
           </div>
           <Separator className="my-4" />
           <div className="flex flex-row flex-nowrap px-2 h-[30px] leading-[30px] items-center">
