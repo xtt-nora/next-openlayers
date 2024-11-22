@@ -147,5 +147,53 @@ export const useSaveEvent = () => {
       point: [parseFloat(data[0].lon), parseFloat(data[0].lat)],
     });
   };
-  return { saveEvent, collectPending };
+  const markerList = (
+    collectList: {
+      point?: number[] | undefined;
+      name: string;
+      order: number;
+    }[],
+    map: Map | null
+  ) => {
+    const coordinates = collectList?.map((point) => point.point);
+    addMarkers(map, "/pin.png", undefined, coordinates);
+  };
+  return { saveEvent, markerList, collectPending };
 };
+
+function addMarkers(map: Map | null, icon: string, point?: number[] | undefined, pointList?: (number[] | undefined)[]) {
+  if (!map) return;
+  if (!point && !pointList) {
+    throw new Error("请传入坐标或者坐标数组");
+  }
+  if (point && pointList) {
+    throw new Error("二者只能指定一组");
+  }
+  let coordinates = pointList ? pointList : [point];
+  if (!coordinates) {
+    throw new Error("您传入的数据违法");
+  }
+  let markerList: Feature<Point>[] = [];
+  coordinates.map((point: any) => {
+    markerList.push(
+      new Feature({
+        type: "icon",
+        geometry: new Point(point),
+      })
+    );
+  });
+  const vectorLayer = new VectorLayer({
+    source: new VectorSource({
+      features: [...markerList],
+    }),
+    style: function (feature) {
+      return new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          src: icon,
+        }),
+      });
+    },
+  });
+  map.addLayer(vectorLayer);
+}

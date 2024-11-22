@@ -63,6 +63,7 @@ interface CollectProps {
 const CollectPage = ({ params }: CollectProps) => {
   const { updateCollectId, collectId } = useCollectModal();
   const unwrappedParams = use(params);
+  const { saveEvent, markerList } = useSaveEvent();
   const router = useRouter();
   const { map } = useMapModal();
   useEffect(() => {
@@ -75,9 +76,12 @@ const CollectPage = ({ params }: CollectProps) => {
   const [data, setData] = useState<DataType | null>(null);
   useEffect(() => {
     if (collectData) setData(collectData);
+    if (collectData?.collectList) {
+      markerList(collectData?.collectList, map);
+    }
   }, [collectData]);
   const { search } = useSearchModal();
-  const { saveEvent } = useSaveEvent();
+
   const del = (item: { point?: number[] | undefined; name: string; order: number }) => {
     delCollectItem({ collectId: unwrappedParams.collectId, order: item.order });
   };
