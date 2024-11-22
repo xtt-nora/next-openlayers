@@ -8,6 +8,8 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Loading } from "@/components/auth/loading";
 import { ConvexImage } from "@/components/convex-image";
+import { useApiMutation } from "@/hooks/use-api-mutation";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 type MapDataItem = {
   _id: string;
   _creationTime: number;
@@ -22,6 +24,8 @@ type MapDataItem = {
 
 export const MapList = () => {
   const mapsData = useQuery(api.map.get);
+  const { mutate: del, pending: delPending } = useApiMutation(api.map.del);
+  const { mutate: updateLock, pending: updatePending } = useApiMutation(api.map.updateLocked);
   const [data, setData] = useState<MapDataItem[]>([]);
   useEffect(() => {
     if (mapsData) setData(mapsData);
@@ -29,11 +33,13 @@ export const MapList = () => {
   const router = useRouter();
   const deleteItem = (collect: any) => {
     setData((prevData) => prevData.filter((item) => item._id !== collect._id));
+    del({ mapId: collect._id });
   };
   const updateLocked = (collect: any) => {
     setData((prevData) =>
       prevData.map((item) => (item._id === collect._id ? { ...item, isLocked: !item.isLocked } : item))
     );
+    updateLock({ mapId: collect._id });
   };
   if (!mapsData) {
     return (
@@ -49,7 +55,7 @@ export const MapList = () => {
           <div
             className="group flex relative text-inherit no-underline select-none transition w-full bg-white duration-100 ease-out cursor-pointer shadow-[rgba(15,15,15,0.07)_0px_0px_0px_1px,rgba(15,15,15,0.05)_0px_2px_4px] rounded-[10px] overflow-hidden static h-full flex-col"
             key={index}
-            onClick={() => router.push(`/map/${collect._id}/map-item`)}
+            onClick={() => !collect.isLocked && router.push(`/map/${collect._id}/map-item`)}
           >
             <div className=" w-full h-[150px]">
               {/* <img src={collect.bgImg} className="w-full h-full" /> */}
@@ -74,7 +80,20 @@ export const MapList = () => {
                   updateLocked(collect);
                 }}
               >
-                {collect.isLocked ? <LockKeyhole color="#ce2c2c" size={16} /> : <LockKeyholeOpen size={16} />}
+                {collect.isLocked ? (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <LockKeyhole color="#ce2c2c" size={16} />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Lock to prevent access to edit data </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : (
+                  <LockKeyholeOpen size={16} />
+                )}
               </div>
               <div className=" border-r h-6  border-r-[rgba(55,53,47,0.09)]"></div>
               <div

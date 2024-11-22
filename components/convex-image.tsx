@@ -11,7 +11,7 @@ interface ConvexImageProps {
 export const ConvexImage = ({ storageId, title }: ConvexImageProps) => {
   const imageUrl = useQuery(api.mapMedia.getImageUrl, { storageId: storageId as Id<"_storage"> });
   return (
-    <div className="aspect-video relativew-full h-full">
+    <div className="aspect-video relativew-full w-full h-full relative">
       <Image
         src={
           imageUrl ||
