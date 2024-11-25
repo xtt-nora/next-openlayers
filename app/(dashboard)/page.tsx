@@ -3,6 +3,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { SetStateAction, useEffect, useState } from "react";
 import { CollectList } from "./_components/collect-list";
 import { MapList } from "./_components/map-list";
+import { FooterPrint } from "./_components/footer-list";
 import { CreateDialog } from "./_components/create-dialog";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -55,7 +56,11 @@ export default function Home() {
           <MapList />
         </>
       )}
-      {value === "足迹" && <>足迹</>}
+      {value === "足迹" && (
+        <>
+          <FooterPrint />
+        </>
+      )}
     </>
   );
 }
