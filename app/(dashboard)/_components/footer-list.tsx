@@ -79,7 +79,6 @@ export const FooterPrint = () => {
         console.error("Map size is undefined");
         return;
       }
-
       mapCanvas.width = size[0];
       mapCanvas.height = size[1];
       var mapContext = mapCanvas.getContext("2d");
@@ -105,6 +104,7 @@ export const FooterPrint = () => {
 
     controls.addEventListener("end", () => {
       const zoom = Math.floor(camera.zoom);
+      console.log(zoom, "zoom");
       let newWidth = 500;
       let resolution = 0.36;
 
@@ -166,7 +166,7 @@ export const FooterPrint = () => {
 
   return (
     <div ref={containerRef} className="w-full h-[calc(100%-130px)] flex flex-col flex-nowrap ">
-      <div id="map" ref={mapRef} className="absolute invisible w-[1000px] h-[500px]"></div>
+      <div id="map" ref={mapRef} className="absolute invisible w-[800px] h-[300px]"></div>
     </div>
   );
 };
