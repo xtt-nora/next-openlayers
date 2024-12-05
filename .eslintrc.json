@@ -19,7 +19,8 @@
     "@typescript-eslint/no-unsafe-function-type": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "no-undef": "off"
+    "no-undef": "off",
+    "prefer-const": "off"
   },
   "extends": ["next/core-web-vitals", "next/typescript"]
 }

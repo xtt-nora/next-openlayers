@@ -32,7 +32,6 @@ export type Payment = {
   collectName: string;
   badge: string;
 };
-const router = useRouter();
 export const columns: ColumnDef<Payment>[] = [
   {
     id: "select",
@@ -77,19 +76,19 @@ export const columns: ColumnDef<Payment>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      return (
-        <>
-          <Button
-            variant="ghost"
-            className="h-8 w-8 p-0"
-            onClick={() => router.push(`/collect/${row.original._id}/collect-item`)}
-          >
-            <span className="sr-only">Open Detail</span>
-            <FolderOpenDot />
-          </Button>
-        </>
-      );
-    },
+    cell: ({ row }) => <TableActions row={row} />,
   },
 ];
+const TableActions: React.FC<{ row: any }> = ({ row }) => {
+  const router = useRouter(); // 在这里调用 useRouter
+  return (
+    <Button
+      variant="ghost"
+      className="h-8 w-8 p-0"
+      onClick={() => router.push(`/collect/${row.original._id}/collect-item`)}
+    >
+      <span className="sr-only">Open Detail</span>
+      <FolderOpenDot />
+    </Button>
+  );
+};
