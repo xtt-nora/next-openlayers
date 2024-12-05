@@ -81,14 +81,14 @@ export const FooterPrint = () => {
       }
       mapCanvas.width = size[0];
       mapCanvas.height = size[1];
-      var mapContext = mapCanvas.getContext("2d");
+      let mapContext = mapCanvas.getContext("2d");
       Array.prototype.forEach.call(document.querySelectorAll(".ol-layer canvas"), function (canvas) {
         if (canvas.width > 0) {
-          var opacity = canvas.parentNode.style.opacity;
+          let opacity = canvas.parentNode.style.opacity;
           mapContext!.globalAlpha = opacity === "" ? 1 : Number(opacity);
-          var transform = canvas.style.transform;
+          let transform = canvas.style.transform;
 
-          var matrix = transform
+          let matrix = transform
             .match(/^matrix\(([^\(]*)\)$/)[1]
             .split(",")
             .map(Number);
