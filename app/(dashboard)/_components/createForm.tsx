@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { generateUploadUrl } from "@/convex/mapMedia";
 import { useMutation, useQuery } from "convex/react";
+import { Loader2 } from "lucide-react";
 
 export const CreateForm = () => {
   const generateUploadUrl = useMutation(api.mapMedia.generateUploadUrl);
@@ -21,6 +22,7 @@ export const CreateForm = () => {
   const { mutate, pending } = useApiMutation(api.map.create);
   const { mutate: setImage, pending: imagePending } = useApiMutation(api.mapMedia.sendImage);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
   const FormSchema = z.object({
     title: z.string().min(2, {
       message: "Username must be at least 2 characters.",
@@ -43,6 +45,7 @@ export const CreateForm = () => {
     },
   });
   async function onSubmit(data: z.infer<typeof FormSchema>) {
+    setLoading(true);
     const postUrl = await generateUploadUrl();
     const result = await fetch(postUrl, {
       method: "POST",
@@ -61,7 +64,7 @@ export const CreateForm = () => {
       userId: "j57fr3sdx1e2t2acp7c3ecypm5741nam",
     })
       .then((mapId: Id<"map">) => {
-        toast.info("Gig created successfully");
+        setLoading(false);
         router.push(`/map/${mapId}/map-item`);
       })
       .catch(() => {
@@ -142,7 +145,10 @@ export const CreateForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit">
+          {loading && <Loader2 className="animate-spin" />}
+          Submit
+        </Button>
       </form>
     </Form>
   );

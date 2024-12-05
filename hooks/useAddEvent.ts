@@ -1,4 +1,5 @@
 import { useRouteplanModal } from "@/store/use-route-modal";
+import { useCollectModal } from "@/store/use-collect-modal";
 import { useApiMutation } from "@/hooks/use-api-mutation";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
@@ -9,10 +10,13 @@ import { Fill, Icon, Stroke, Style } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
 import CircleStyle from "ol/style/Circle";
 import { getVectorContext } from "ol/render";
+/**
+ * 添加 地图hook
+ * @returns void props
+ */
 export const useAddEvent = () => {
   const { routeplanId } = useRouteplanModal();
   const { mutate, pending } = useApiMutation(api.routeplan.addSubRoute);
-
   const addEvent = (data: any) => {
     mutate({
       routeplanId: routeplanId,
@@ -129,3 +133,67 @@ export const useAddEvent = () => {
 
   return { addEvent, pending, createLineEvent };
 };
+/**
+ * 保存 地图hook
+ * @returns void props
+ */
+export const useSaveEvent = () => {
+  const { collectId } = useCollectModal();
+  const { mutate: addCollect, pending: collectPending } = useApiMutation(api.collect.addCollectData);
+  const saveEvent = (data: any) => {
+    addCollect({
+      collectId: collectId,
+      name: data[0].name,
+      point: [parseFloat(data[0].lon), parseFloat(data[0].lat)],
+    });
+  };
+  const markerList = (
+    collectList: {
+      point?: number[] | undefined;
+      name: string;
+      order: number;
+    }[],
+    map: Map | null
+  ) => {
+    const coordinates = collectList?.map((point) => point.point);
+    addMarkers(map, "/pin.png", undefined, coordinates);
+  };
+  return { saveEvent, markerList, collectPending };
+};
+
+function addMarkers(map: Map | null, icon: string, point?: number[] | undefined, pointList?: (number[] | undefined)[]) {
+  if (!map) return;
+  if (!point && !pointList) {
+    throw new Error("请传入坐标或者坐标数组");
+  }
+  if (point && pointList) {
+    throw new Error("二者只能指定一组");
+  }
+  let coordinates = pointList ? pointList : [point];
+  if (!coordinates) {
+    throw new Error("您传入的数据违法");
+  }
+  let markerList: Feature<Point>[] = [];
+  coordinates.map((point: any) => {
+    markerList.push(
+      new Feature({
+        type: "icon",
+        geometry: new Point(point),
+      })
+    );
+  });
+  const vectorLayer = new VectorLayer({
+    source: new VectorSource({
+      features: [...markerList],
+    }),
+    style: function (feature) {
+      return new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          src: icon,
+        }),
+      });
+    },
+  });
+  map.addLayer(vectorLayer);
+}

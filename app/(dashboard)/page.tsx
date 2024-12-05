@@ -3,6 +3,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { SetStateAction, useEffect, useState } from "react";
 import { CollectList } from "./_components/collect-list";
 import { MapList } from "./_components/map-list";
+import { FooterPrint } from "./_components/footer-list";
 import { CreateDialog } from "./_components/create-dialog";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -17,7 +18,7 @@ export default function Home() {
       title: "我的地图",
     },
     {
-      id: 1,
+      id: 2,
       title: "足迹",
     },
   ];
@@ -42,7 +43,8 @@ export default function Home() {
             </div>
           ))}
         </ToggleGroup>
-        {value === "我的地图" && <CreateDialog />}
+        {/* {value === "我的地图" && <CreateDialog  value={value}/>} */}
+        <CreateDialog value={value} />
       </div>
       {value === "收藏" && (
         <>
@@ -54,7 +56,11 @@ export default function Home() {
           <MapList />
         </>
       )}
-      {value === "足迹" && <>足迹</>}
+      {value === "足迹" && (
+        <>
+          <FooterPrint />
+        </>
+      )}
     </>
   );
 }

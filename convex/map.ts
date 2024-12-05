@@ -46,3 +46,26 @@ export const create = mutation({
     return mapId;
   },
 });
+export const del = mutation({
+  args: {
+    mapId: v.id("map"),
+  },
+  handler: async (ctx, args) => {
+    const { mapId } = args;
+    await ctx.db.delete(mapId);
+  },
+});
+
+export const updateLocked = mutation({
+  args: {
+    mapId: v.id("map"),
+  },
+  handler: async (ctx, args) => {
+    const { mapId } = args;
+    const data = await ctx.db.get(mapId);
+    const isLocked = data?.isLocked;
+    await ctx.db.patch(mapId, {
+      isLocked: !isLocked,
+    });
+  },
+});

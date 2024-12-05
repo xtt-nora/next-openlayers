@@ -13,6 +13,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as collect from "../collect.js";
 import type * as map from "../map.js";
 import type * as mapMedia from "../mapMedia.js";
 import type * as routeplan from "../routeplan.js";
@@ -27,6 +28,7 @@ import type * as user from "../user.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  collect: typeof collect;
   map: typeof map;
   mapMedia: typeof mapMedia;
   routeplan: typeof routeplan;

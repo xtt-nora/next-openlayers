@@ -3,7 +3,7 @@
 import React from "react";
 import { Component } from "react";
 import { Feature, Map, Overlay, View } from "ol";
-import { defaults as defaultControls, FullScreen } from "ol/control";
+import { defaults as defaultControls, FullScreen, ZoomToExtent } from "ol/control";
 import { fromLonLat } from "ol/proj";
 import { Point } from "ol/geom";
 import { Style, Icon } from "ol/style";
@@ -24,6 +24,7 @@ interface MapProps {
   isshare?: boolean;
   isadd?: boolean;
   addEvent?: (data: any) => void;
+  saveEvent?: (data: any) => void;
 }
 interface State {
   zoomLevel: number;
@@ -33,8 +34,8 @@ export default class ComMap extends Component<MapProps, State> {
     resize: false,
     width: "100%",
     height: "100%",
-    center: [0, 0], // 默认经纬度
-    zoom: 4, // 默认 zoom 级别
+    center: [0, 0],
+    zoom: 4,
     issave: false,
     isshare: false,
     isadd: false,
@@ -87,7 +88,12 @@ export default class ComMap extends Component<MapProps, State> {
         zoom: false,
         rotate: false,
         attribution: false,
-      }).extend([new FullScreen()]),
+      }).extend([
+        new FullScreen(),
+        new ZoomToExtent({
+          extent: [813079.7791264898, 5929220.284081122, 848966.9639063801, 5936863.986909639],
+        }),
+      ]),
     });
     useMapModal.getState().updateMap(this.map);
     this.bindPopupCloser();
@@ -133,7 +139,7 @@ export default class ComMap extends Component<MapProps, State> {
     alert("分享!");
   }
   saveEvent(data: any, evt: any) {
-    alert("保存!");
+    this.props.saveEvent && this.props.saveEvent(data);
   }
   addEvent(data: any, evt: any) {
     this.props.addEvent && this.props.addEvent(data);
