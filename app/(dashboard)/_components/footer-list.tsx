@@ -53,8 +53,8 @@ export const FooterPrint = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     containerRef.current.appendChild(renderer.domElement);
     scene.background = new THREE.Color(0xa0a0a0);
-    var hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.3);
-    var dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    let hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.3);
+    let dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
     hemiLight.position.set(0, 100, 0);
     hemiLight.matrixAutoUpdate = false;
     hemiLight.updateMatrix();

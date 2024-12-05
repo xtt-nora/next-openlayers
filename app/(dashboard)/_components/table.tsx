@@ -32,6 +32,7 @@ export type Payment = {
   collectName: string;
   badge: string;
 };
+const router = useRouter();
 export const columns: ColumnDef<Payment>[] = [
   {
     id: "select",
@@ -77,7 +78,6 @@ export const columns: ColumnDef<Payment>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const router = useRouter();
       return (
         <>
           <Button
