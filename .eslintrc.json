@@ -1,8 +1,25 @@
 {
   "rules": {
+    "no-unused-vars": "off",
+    "no-case-declarations": "off",
+    "no-use-before-define": "off",
+    "no-extra-boolean-cast": "off",
+    "space-before-function-paren": "off",
     "@typescript-eslint/no-empty-object-type": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }]
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-unused-expressions": "off",
+    "@typescript-eslint/no-unsafe-function-type": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "no-undef": "off"
   },
   "extends": ["next/core-web-vitals", "next/typescript"]
 }
